@@ -2,10 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sys import exit
 
-msd = np.loadtxt("msd.dat").T;
+msd = np.loadtxt("msdx.dat");
 t = msd[1:,0]
 x = msd[1:,1]
-y = msd[1:,2]
+msd = np.loadtxt("msdy.dat");
+y = msd[1:,1]
 
 Dx = (x[-1] - x[0] )/(t[-1] - t[0])
 Dx/=2

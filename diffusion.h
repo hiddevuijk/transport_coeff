@@ -4,10 +4,12 @@
 #include <vector>
 #include <string>
 
-class Diffusion {
- public:
+class MDiffusion;
 
-  Diffusion(int ntime, double dt);
+class Diffusion {
+ friend class MDiffusion;
+ public:
+  Diffusion(int ntime, double dt, int sampleEvery = 1);
 
   void sample(double x);
 
@@ -18,6 +20,8 @@ class Diffusion {
  private:
   void calculateR2T();
 
+  int sampleEvery_;
+  int sampleInterval_;
   int nsamp_;
   int ntime_;
   int nfill_;
@@ -26,12 +30,11 @@ class Diffusion {
   std::vector<double> r2t_;
 
   std::vector<double> x_;
-  std::vector<double> v_;
 };
 
-Diffusion::Diffusion(int ntime, double dt)
-  : nsamp_(0), ntime_(ntime), nfill_(0), lastAdded_(0), time_(ntime),
-    r2t_(ntime, 0), x_(ntime), v_(ntime)
+Diffusion::Diffusion(int ntime, double dt, int sampleEvery)
+  : sampleEvery_(sampleEvery), sampleInterval_(0), nsamp_(0), ntime_(ntime),
+    nfill_(0), lastAdded_(0), time_(ntime), r2t_(ntime, 0), x_(ntime)
 {
   for(int i = 0; i < ntime_; ++i) {
     time_[i] = i * dt;
@@ -47,7 +50,11 @@ void Diffusion::sample(double x)
   } else {
     lastAdded_ = (lastAdded_ + 1 ) % ntime_;
     x_[lastAdded_] = x;
-    calculateR2T();
+    ++sampleInterval_;
+    if (sampleInterval_ == sampleEvery_) {
+      sampleInterval_ = 0;
+      calculateR2T();
+    }
   }
 }
 

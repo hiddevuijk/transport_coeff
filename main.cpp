@@ -2,6 +2,7 @@
 
 #include "system.h"
 #include "diffusion.h"
+#include "multi_diffusion.h"
 
 #include "ConfigFile.h"
 
@@ -28,7 +29,9 @@ int main()
   System system(dt, kappa, gamma, T, m, seed);
   system.integrate(time/10);
 
-  Diffusion diff(ntime, dtSample);
+  Diffusion diffx(ntime, dtSample);
+  Diffusion diffy(ntime, dtSample);
+  MDiffusion mdiff(2, ntime, dtSample);
 
   double t = 0;
   int i = 0;
@@ -36,11 +39,16 @@ int main()
     t += dtSample;
     ++i;
     system.integrate(dtSample);
-    diff.sample( system.getX() );
+    diffx.sample(system.getX() );
+    diffy.sample(system.getY() );
+    mdiff.sample(0, system.getX() );
+    mdiff.sample(1, system.getY() );
     if( i % 10000 == 0 ) cout << t << endl;
   }
 
-  diff.save("msd.dat"); 
+  diffx.save("msdx.dat"); 
+  diffy.save("msdy.dat"); 
+  mdiff.save("msd.dat"); 
   
 
   return 0;

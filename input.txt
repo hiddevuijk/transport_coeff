@@ -1,9 +1,9 @@
-time = 500000000
-dt = 1.
-kappa = 0
+time = 50000
+dt = 1e-2
+kappa = 0.
 gamma = 1
 T = 1
-m = 1.
-seed = 111956789
+m = 1e-1
+seed = 129956789
 ntime = 50
-dtSample = 10
+dtSample = 1.
